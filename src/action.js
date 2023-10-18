@@ -44,6 +44,9 @@ const action = async () => {
   // get repository teams
 
   const teams = queryTeamsForRepo(octokit, owner, repo);
+  for (let team of teams) {
+    console.log(queryTeamPermissionsForRepo(octokit, owner, repo, team.slug));
+    }
   // check if config-info.yaml exists on root of repository
   const catalogInfo = await hasCatalogInfo();
 
