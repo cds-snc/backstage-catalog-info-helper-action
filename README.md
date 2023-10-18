@@ -1,10 +1,13 @@
-# Generic Project Template
+# Backstage Catalog Info Helper Action
 
-This repository provides some base files for setting up a repository at
-CDS. Plan is to create more project template for specific technologies:
+This repository contains a GitHub Action that helps you to generate a catalog-info.yaml file for your Backstage catalog.
 
-- project-template-terraform
-- project-template-python
-- project-template-nodejs
+It aims at providing an easy way to get started with Backstage by generating a catalog-info.yaml file for you if you don't have one yet.
 
-Note that default community health files are maintained at https://github.com/cds-snc/.github 
+## Features
+
+- [x] Generate a catalog-info.yaml file for your Backstage catalog
+
+## Planned Features
+
+- [ ] Automatically propose updates to the catalog-info.yaml file when key repository information changes
