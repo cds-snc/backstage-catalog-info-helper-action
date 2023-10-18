@@ -1,0 +1,18 @@
+name: 'Backstage Catalog Info Helper'
+description: 'A GitHub Action to help with Backstage Catalog Info'
+inputs:
+  github-app-id:
+    description: 'The GitHub APP ID'
+    required: true
+  github-app-private-key:
+    description: 'The GitHub APP Private Key'
+    required: true
+  github-app-installation-id:
+    description: 'The GitHub APP Installation ID'
+    required: true
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+branding:
+  icon: 'file-text'
+  color: 'green'
