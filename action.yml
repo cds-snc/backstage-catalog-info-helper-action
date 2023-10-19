@@ -23,10 +23,7 @@ runs:
       with:
         node-version: '20.x'
     - name: Test if input variables present display true if not null/empty
-      run: |
-        [ -z "${{ inputs.github-app-id }}" ] && echo "Empty"
-        [ -z "${{ inputs.github-app-private-key }}" ] && echo "Empty"
-        [ -z "${{ inputs.github-app-installation-id }}" ] && echo "Empty"
+      run: test.sh
       shell: bash
     # - name: Run backstage catalog helper
     #   run: node dist/index.js
