@@ -1,8 +1,8 @@
 name: Backstage Catalog Info Helper
 on:
   workflow_dispatch:
-#   schedule:
-#     - cron: "0 0 * * *"
+  schedule:
+    - cron: "0 0 * * *"
 
 jobs:
   update-catalog-info:
@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - name: Update catalog-info.yaml
-        uses: cds-snc/backstage-catalog-info-helper-action@dev
+        uses: cds-snc/backstage-catalog-info-helper-action@main
         with:
           github-app-id: ${{ secrets.SRE_BOT_RO_APP_ID }}
           github-app-installation-id: ${{ secrets.SRE_BOT_RO_INSTALLATION_ID }}
