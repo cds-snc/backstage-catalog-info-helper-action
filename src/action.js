@@ -4,13 +4,12 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 
 const { createAppAuth } = require("@octokit/auth-app");
-
+const { queryRepository, queryTeamsForRepository } = require("./query.js");
 const {
-  queryRepository,
-  queryTeamsForRepo,
-  queryTeamPermissionsForRepo,
   hasCatalogInfo,
-} = require("./query.js");
+  generateCatalogInfo,
+  saveCatalogInfo,
+} = require("./catalog.js");
 
 const action = async () => {
   const githubAppId = core.getInput("github-app-id", {
@@ -42,18 +41,20 @@ const action = async () => {
   const repository = await queryRepository(octokit, owner, repo);
 
   // get repository teams
+  console.log(`👥 Getting teams for ${owner}/${repo}...`);
+  const teams = await queryTeamsForRepository(octokit, owner, repo);
 
-//   const teams = queryTeamsForRepo(octokit, owner, repo);
-//   // eslint-disable-next-line prefer-const
-//   for (let team of teams) {
-//     console.log(queryTeamPermissionsForRepo(octokit, owner, repo, team.slug));
-//   }
-  // check if config-info.yaml exists on root of repository
-  const catalogInfo = await hasCatalogInfo();
+  // check if catalog-info.yaml exists
+  const hasCatalogInfoFile = await hasCatalogInfo();
 
-  console.log(repository);
-  console.log(teams);
-  console.log(catalogInfo);
+  // if catalog-info.yaml does not exist, generate it
+  if (!hasCatalogInfoFile) {
+    console.log("Generating catalog-info.yaml...");
+    const catalogInfoContent = await generateCatalogInfo(repository, teams);
+    await saveCatalogInfo(catalogInfoContent);
+  } else {
+    console.log("catalog-info.yaml already exists.");
+  }
 };
 
 module.exports = { action };
