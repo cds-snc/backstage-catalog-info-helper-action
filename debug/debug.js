@@ -1,16 +1,22 @@
 "use strict";
 
+const fs = require("fs");
 const github = require("@actions/github");
 const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
-const { queryRepository, queryTeamsForRepository, queryCollaboratorsForRepository } = require("../src/query.js");
-const { hasCatalogInfo, parseCatalogInfo } = require("../src/catalog.js");
+const { queryRepository, queryTeamsForRepository } = require("../src/query.js");
+const {
+  hasCatalogInfo,
+  parseCatalogInfo,
+  getEntityOwners,
+  generateCatalogInfo,
+} = require("../src/catalog.js");
 
 const octokitAppAuth = new Octokit({
   authStrategy: createAppAuth,
   auth: {
-    appId: process.env.GITHUB_APP_ID,
-    privateKey: process.env.GITHUB_APP_PRIVATE_KEY,
+    appId: process.env.GH_APP_ID,
+    privateKey: process.env.GH_APP_PRIVATE_KEY,
   },
 });
 
@@ -28,8 +34,8 @@ const run = async () => {
   console.log(installationId);
 
   const auth = createAppAuth({
-    appId: process.env.GITHUB_APP_ID,
-    privateKey: process.env.GITHUB_APP_PRIVATE_KEY,
+    appId: process.env.GH_APP_ID,
+    privateKey: process.env.GH_APP_PRIVATE_KEY,
   });
 
   const installationAuthentication = await auth({
@@ -68,23 +74,28 @@ const run = async () => {
     }
   }
 
-  const collaborators = await queryCollaboratorsForRepository(octokit, owner, repo);
-  console.log("Collaborators");
+  // get entity owners
+  const entityOwners = await getEntityOwners(teams);
+  console.log("Entity owners");
   console.log("=============");
-  for (const collaborator of collaborators) {
-    console.log("----");
-    // console.log("login: " + collaborator.login);
-    // console.log("permission: " + collaborator.permission + "\n");
-    console.log(collaborator.login)
-    console.log(collaborator.role_name)
-  }
+  console.log(entityOwners);
 
   // check if catalog-info.yaml exists on root of repository
-  console.log("Catalog info file exists");
+  console.log("Catalog info file exists?");
   console.log("========================");
   const catalogInfo = await hasCatalogInfo();
   console.log(catalogInfo);
 
+  if (catalogInfo) {
+    // if file exists, delete it
+    console.log("Deleting catalog-info.yaml");
+    fs.rmSync("catalog-info.yaml");
+  }
+  // generate catalog-info.yaml
+  console.log("Generating catalog-info.yaml");
+  console.log("============================");
+  const catalogInfoFile = await generateCatalogInfo({repository, teams});
+  console.log(catalogInfoFile);
   // parse catalog-info.yaml
   console.log("Parsing catalog-info.yaml");
   console.log("=========================");
@@ -97,6 +108,7 @@ const run = async () => {
   const apiVersion = parsedCatalogInfo.apiVersion;
   console.log(apiVersion);
 
+  
 };
 
 run();
