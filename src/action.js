@@ -41,7 +41,7 @@ const action = async () => {
   const repository = await queryRepository(octokit, owner, repo);
 
   // get repository teams
-  core.info(`👥 Getting teams for ${owner}/${repo}...`);
+  console.log(`👥 Getting teams for ${owner}/${repo}...`);
   const teams = await queryTeamsForRepository(octokit, owner, repo);
 
   // check if catalog-info.yaml exists
@@ -49,11 +49,11 @@ const action = async () => {
 
   // if catalog-info.yaml does not exist, generate it
   if (!hasCatalogInfoFile) {
-    core.info("Generating catalog-info.yaml...");
-    const catalogInfoContent = await generateCatalogInfo({ repository, teams });
-    saveCatalogInfo(catalogInfoContent);
+    console.log("Generating catalog-info.yaml...");
+    const catalogInfoContent = await generateCatalogInfo(repository, teams);
+    await saveCatalogInfo(catalogInfoContent);
   } else {
-    core.info("catalog-info.yaml already exists.");
+    console.log("catalog-info.yaml already exists.");
   }
 };
 
