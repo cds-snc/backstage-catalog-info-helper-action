@@ -11,7 +11,7 @@ const { queryRepository, queryTeamsForRepository } = require("./query.js");
 const {
   hasCatalogInfo,
   generateCatalogInfo,
-  getEntityOwners,
+  saveCatalogInfo,
 } = require("./catalog.js");
 
 jest.mock("@actions/core");
@@ -104,9 +104,8 @@ describe("action", () => {
       },
     };
 
-    when(getEntityOwners).calledWith(teamsData).mockReturnValue([teamsData[1]]);
     when(generateCatalogInfo)
-      .calledWith(repoData, teamsData)
+      .calledWith("repository", "teams")
       .mockReturnValue(catalogInfoData);
 
     await action();
@@ -115,8 +114,52 @@ describe("action", () => {
     expect(queryTeamsForRepository).toHaveBeenCalledWith(
       "octokit",
       "owner",
-      "repo",
+      "repo"
     );
     expect(hasCatalogInfo).toReturnWith(false);
+
+    expect(generateCatalogInfo).toHaveBeenCalledWith(repoData, teamsData);
+
+    expect(saveCatalogInfo).toHaveBeenCalled();
+  });
+
+  test("catalog-info.yaml already exists", async () => {
+    when(core.getInput)
+      .calledWith("github-app-id")
+      .mockReturnValue("github-app-id");
+
+    when(core.getInput)
+      .calledWith("github-app-installation-id")
+      .mockReturnValue("github-app-installation-id");
+
+    when(core.getInput)
+      .calledWith("github-app-private-key")
+      .mockReturnValue("github-app-private-key");
+
+    when(github.getOctokit).calledWith("token").mockReturnValue("octokit");
+
+    when(queryRepository)
+      .calledWith("octokit", "owner", "repo")
+      .mockReturnValue("repository");
+
+    when(queryTeamsForRepository)
+      .calledWith("octokit", "owner", "repo")
+      .mockReturnValue("teams");
+
+    when(hasCatalogInfo).calledWith().mockReturnValue(true);
+
+    await action();
+
+    expect(queryRepository).toHaveBeenCalledWith("octokit", "owner", "repo");
+    expect(queryTeamsForRepository).toHaveBeenCalledWith(
+      "octokit",
+      "owner",
+      "repo"
+    );
+    expect(hasCatalogInfo).toReturnWith(true);
+
+    expect(generateCatalogInfo).not.toHaveBeenCalled();
+
+    expect(saveCatalogInfo).not.toHaveBeenCalled();
   });
 });
