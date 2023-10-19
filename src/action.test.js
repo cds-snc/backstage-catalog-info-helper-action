@@ -114,7 +114,7 @@ describe("action", () => {
     expect(queryTeamsForRepository).toHaveBeenCalledWith(
       "octokit",
       "owner",
-      "repo"
+      "repo",
     );
     expect(hasCatalogInfo).toReturnWith(false);
 
@@ -154,7 +154,7 @@ describe("action", () => {
     expect(queryTeamsForRepository).toHaveBeenCalledWith(
       "octokit",
       "owner",
-      "repo"
+      "repo",
     );
     expect(hasCatalogInfo).toReturnWith(true);
 
