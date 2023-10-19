@@ -10,6 +10,7 @@ const {
   parseCatalogInfo,
   getEntityOwners,
   generateCatalogInfo,
+  saveCatalogInfo,
 } = require("../src/catalog.js");
 
 const octokitAppAuth = new Octokit({
@@ -48,14 +49,18 @@ const run = async () => {
   const repo = github.context.repo.repo;
 
   console.log(`Owner: ${owner}\nRepo: ${repo}`);
+  console.log(" Repository data sent to Azure Log Analytics");
 
+  console.log("✅ Generating catalog-info.yaml...");
   // get current repository data
   const repository = await queryRepository(octokit, owner, repo);
   console.log("Repository data");
   console.log("===============");
   console.log(repository);
+  console.log(repository);
 
   // get repository teams
+  console.log(`👥 Getting teams for ${owner}/${repo}...`);
   const teams = await queryTeamsForRepository(octokit, owner, repo);
   console.log("Teams");
   console.log("=====");
@@ -83,19 +88,24 @@ const run = async () => {
   // check if catalog-info.yaml exists on root of repository
   console.log("Catalog info file exists?");
   console.log("========================");
-  const catalogInfo = await hasCatalogInfo();
-  console.log(catalogInfo);
+  const hasCatalogInfoFile = await hasCatalogInfo();
+  console.log(hasCatalogInfoFile);
 
-  if (catalogInfo) {
+  if (hasCatalogInfoFile) {
     // if file exists, delete it
     console.log("Deleting catalog-info.yaml");
     fs.rmSync("catalog-info.yaml");
   }
   // generate catalog-info.yaml
-  console.log("Generating catalog-info.yaml");
+  console.log("✅ Generating catalog-info.yaml...");
   console.log("============================");
-  const catalogInfoFile = await generateCatalogInfo({repository, teams});
-  console.log(catalogInfoFile);
+  const catalogInfoContent = await generateCatalogInfo(repository, teams);
+  console.log(catalogInfoContent);
+
+  // save catalog-info.yaml
+  console.log("Saving catalog-info.yaml");
+  console.log("========================");
+  saveCatalogInfo(catalogInfoContent)
   // parse catalog-info.yaml
   console.log("Parsing catalog-info.yaml");
   console.log("=========================");
@@ -108,7 +118,8 @@ const run = async () => {
   const apiVersion = parsedCatalogInfo.apiVersion;
   console.log(apiVersion);
 
-  
+  console.log("Deleting catalog-info.yaml");
+  fs.rmSync("catalog-info.yaml");
 };
 
 run();
