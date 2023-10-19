@@ -29,15 +29,6 @@ runs:
     - name: Run backstage catalog helper
       run: node dist/index.js
       shell: bash
-      with:
-        github-app-id: ${{ inputs.github-app-id }}
-        github-app-private-key: ${{ inputs.github-app-private-key }}
-        github-app-installation-id: ${{ inputs.github-app-installation-id }}
-    - name: Upload Catalog Info
-      uses: actions/upload-artifact@v2
-      with:
-        name: catalog-info
-        path: catalog-info.yaml
     - name: Create PR
       uses: peter-evans/create-pull-request@v3
       with:
