@@ -23,8 +23,8 @@ runs:
       with:
         node-version: '20.x'
     - name: Test if input variables present display true if not null/empty
-      # run: test.sh
-      run: ls -la
+      run: sh test.sh
+      # run: ls -la
       shell: bash
     # - name: Run backstage catalog helper
     #   run: node dist/index.js
