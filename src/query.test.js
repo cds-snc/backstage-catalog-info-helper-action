@@ -91,6 +91,32 @@ describe("queryTeamsForRepository", () => {
 
     expect(result).toEqual(response.data);
   });
+
+  test("returns an empty array if the response status is 404", async () => {
+    const octokit = {
+      rest: {
+        repos: {
+          listTeams: jest.fn(),
+        },
+      },
+    };
+
+    const response = {
+      status: 404,
+    };
+
+    const owner = "owner";
+    const repo = "repo";
+
+    when(octokit.rest.repos.listTeams)
+      .calledWith({ owner, repo })
+      .mockReturnValue(response);
+
+    const result = await queryTeamsForRepository(octokit, owner, repo);
+
+    expect(result).toEqual([]);
+  });
+
   test("throws an error if the request failed", async () => {
     const octokit = {
       rest: {

@@ -16,6 +16,9 @@ const queryTeamsForRepository = async (octokit, owner, repo) => {
     owner,
     repo,
   });
+  if (response.status === 404) {
+    return [];
+  }
   if (response.status !== 200) {
     throw new Error(`Failed to query teams: ${response.status}`);
   }
