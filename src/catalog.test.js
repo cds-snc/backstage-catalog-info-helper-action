@@ -126,7 +126,7 @@ describe("generateCatalogInfo", () => {
       { name: "Team 3", id: 3, slug: "team-3", permission: "admin" },
     ];
 
-    const result = await generateCatalogInfo({ repository, teams });
+    const result = await generateCatalogInfo(repository, teams);
     expect(result).toEqual({
       apiVersion: "backstage.io/v1alpha1",
       kind: "Component",
@@ -150,7 +150,7 @@ describe("generateCatalogInfo", () => {
     };
     const teams = [];
 
-    const result = await generateCatalogInfo({ repository, teams });
+    const result = await generateCatalogInfo(repository, teams);
     expect(result).toEqual({
       apiVersion: "backstage.io/v1alpha1",
       kind: "Component",
@@ -178,7 +178,7 @@ describe("generateCatalogInfo", () => {
       { name: "Team 3", id: 3, slug: "team-3", permission: "maintain" },
     ];
 
-    const result = await generateCatalogInfo({ repository, teams });
+    const result = await generateCatalogInfo(repository, teams);
     expect(result).toEqual({
       apiVersion: "backstage.io/v1alpha1",
       kind: "Component",
@@ -196,6 +196,21 @@ describe("generateCatalogInfo", () => {
 });
 
 describe("saveCatalogInfo", () => {
+  let dumpSpy = jest.spyOn(yaml, "dump");
+  let writeFileSyncSpy = jest
+    .spyOn(fs, "writeFileSync")
+    .mockImplementation(() => {});
+
+  beforeEach(() => {
+    dumpSpy = jest.spyOn(yaml, "dump");
+    writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
+  });
+
+  afterEach(() => {
+    dumpSpy.mockRestore();
+    writeFileSyncSpy.mockRestore();
+  });
+
   test("should save the catalogInfo object to catalog-info.yaml", async () => {
     const catalogInfo = {
       apiVersion: "backstage.io/v1alpha1",
@@ -210,14 +225,12 @@ describe("saveCatalogInfo", () => {
         owner: "component owner",
       },
     };
-    const dumpSpy = jest.spyOn(yaml, "dump");
-    const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
     await saveCatalogInfo(catalogInfo);
     expect(dumpSpy).toHaveBeenCalledWith(catalogInfo);
     expect(writeFileSyncSpy).toHaveBeenCalledWith(
       "catalog-info.yaml",
       yaml.dump(catalogInfo),
-      "utf8"
+      "utf8",
     );
   });
   test("should log the error if the file does not exist", async () => {

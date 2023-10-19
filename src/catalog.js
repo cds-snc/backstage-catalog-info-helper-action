@@ -15,8 +15,7 @@ const hasCatalogInfo = async () => {
 };
 
 const parseCatalogInfo = async () => {
-  // parses catalog-info.yaml into catalogInfo object
-  // returns the parsed yaml
+  // parses catalog-info.yaml into catalogInfo object, returns the parsed yaml
   let catalogInfo = {};
   try {
     catalogInfo = yaml.load(fs.readFileSync("catalog-info.yaml", "utf8"));
@@ -26,32 +25,24 @@ const parseCatalogInfo = async () => {
   return catalogInfo;
 };
 
-const getEntityOwner = async (repoOwner, teams) => {
-  // check if there are teams
-  if (teams.length === 0) {
-    return repoOwner;
-  }
+const getEntityOwners = async (teams) => {
+  // check if there are teams with admin permissions
   const owner = [];
+  if (teams.length === 0) {
+    return owner;
+  }
   for (const team of teams) {
     if (team.permission === "admin") {
       owner.push(team);
     }
   }
-  if (owner.length === 1) {
-    return owner[0];
-  } else {
-    return repoOwner;
-  }
+  return owner;
 };
 
-const generateCatalogInfo = async (payload) => {
-  const { repository, teams } = payload;
-
-  const owner = await getEntityOwner(repository.owner, teams);
-  // generates catalog-info.yaml
-  // returns the generated yaml
-  let catalogInfo = {
-    apiVersion: " backstage.io/v1alpha1",
+const generateCatalogInfo = async (repository, teams) => {
+  const componentOwner = await getEntityOwners(teams);
+  const catalogInfo = {
+    apiVersion: "backstage.io/v1alpha1",
     kind: "Component",
     metadata: {
       name: repository.name,
@@ -60,39 +51,29 @@ const generateCatalogInfo = async (payload) => {
     spec: {
       type: "website",
       lifecycle: "experimental",
-      owner: owner.length !== 1 ? repository.owner : owner[0].name,
+      owner:
+        componentOwner.length === 1
+          ? componentOwner[0].slug
+          : repository.owner.login,
     },
   };
-  try {
-    catalogInfo = yaml.load(fs.readFileSync("catalog-info.yaml", "utf8"));
-  } catch (error) {
-    console.log(error);
-  }
+
   return catalogInfo;
 };
 
-/**
- * Parse repository data and generate a catalog-info.yaml file.
- */
+const saveCatalogInfo = async (catalogInfo) => {
+  try {
+    catalogInfo = yaml.dump(catalogInfo);
+    fs.writeFileSync("catalog-info.yaml", catalogInfo, "utf8");
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-/**
- * Required yaml parameters for kind Component
- * apiVersion
- * kind
- * metadata
- *  name
- * spec
- *  type
- *  lifecycle
- *  owner
- */
-
-// check if a file name catalog-info.yaml or yml exists in the root of the repository
-
-// if it does not exist, create it
-
-// if it does exist, parse it
-
-// if it does exist, check if the apiVersion is the same as the current version
-
-module.exports = { hasCatalogInfo, parseCatalogInfo, generateCatalogInfo };
+module.exports = {
+  hasCatalogInfo,
+  parseCatalogInfo,
+  getEntityOwners,
+  generateCatalogInfo,
+  saveCatalogInfo,
+};
