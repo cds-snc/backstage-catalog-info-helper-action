@@ -7,8 +7,8 @@ const { createAppAuth } = require("@octokit/auth-app");
 
 const {
   queryRepository,
-  queryTeamsForRepo,
-  queryTeamPermissionsForRepo,
+  //   queryTeamsForRepo,
+  //   queryTeamPermissionsForRepo,
   hasCatalogInfo,
 } = require("./query.js");
 
@@ -43,16 +43,16 @@ const action = async () => {
 
   // get repository teams
 
-//   const teams = queryTeamsForRepo(octokit, owner, repo);
-//   // eslint-disable-next-line prefer-const
-//   for (let team of teams) {
-//     console.log(queryTeamPermissionsForRepo(octokit, owner, repo, team.slug));
-//   }
+  //   const teams = queryTeamsForRepo(octokit, owner, repo);
+  //   // eslint-disable-next-line prefer-const
+  //   for (let team of teams) {
+  //     console.log(queryTeamPermissionsForRepo(octokit, owner, repo, team.slug));
+  //   }
   // check if config-info.yaml exists on root of repository
   const catalogInfo = await hasCatalogInfo();
 
   console.log(repository);
-  console.log(teams);
+  //   console.log(teams);
   console.log(catalogInfo);
 };
 

@@ -38180,8 +38180,8 @@ const { createAppAuth } = __nccwpck_require__(7541);
 
 const {
   queryRepository,
-  queryTeamsForRepo,
-  queryTeamPermissionsForRepo,
+  //   queryTeamsForRepo,
+  //   queryTeamPermissionsForRepo,
   hasCatalogInfo,
 } = __nccwpck_require__(869);
 
@@ -38216,16 +38216,16 @@ const action = async () => {
 
   // get repository teams
 
-  const teams = queryTeamsForRepo(octokit, owner, repo);
-  // eslint-disable-next-line prefer-const
-  for (let team of teams) {
-    console.log(queryTeamPermissionsForRepo(octokit, owner, repo, team.slug));
-  }
+  //   const teams = queryTeamsForRepo(octokit, owner, repo);
+  //   // eslint-disable-next-line prefer-const
+  //   for (let team of teams) {
+  //     console.log(queryTeamPermissionsForRepo(octokit, owner, repo, team.slug));
+  //   }
   // check if config-info.yaml exists on root of repository
   const catalogInfo = await hasCatalogInfo();
 
   console.log(repository);
-  console.log(teams);
+  //   console.log(teams);
   console.log(catalogInfo);
 };
 
@@ -38235,12 +38235,10 @@ module.exports = { action };
 /***/ }),
 
 /***/ 869:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+/***/ ((module) => {
 
 "use strict";
 
-
-const fs = __nccwpck_require__(7147);
 
 const queryRepository = async (octokit, owner, repo) => {
   const response = await octokit.rest.repos.get({
@@ -38253,8 +38251,7 @@ const queryRepository = async (octokit, owner, repo) => {
   return response.data;
 };
 
-const queryTeamsForRepo = async (octokit, owner, repo) => {
-  // use "slug" to reference teams - ref: https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repository-teams
+const queryTeamsForRepository = async (octokit, owner, repo) => {
   const response = await octokit.rest.repos.listTeams({
     owner,
     repo,
@@ -38265,36 +38262,21 @@ const queryTeamsForRepo = async (octokit, owner, repo) => {
   return response.data;
 };
 
-const queryTeamPermissionsForRepo = async (octokit, org, owner, repo, slug) => {
-  // checks permissions for the team on the repository
-  const response = await octokit.rest.teams.checkPermissionsForRepoInOrg({
-    org,
-    team_slug: slug,
+const queryCollaboratorsForRepository = async (octokit, owner, repo) => {
+  const response = await octokit.rest.repos.listCollaborators({
     owner,
     repo,
   });
   if (response.status !== 200) {
-    throw new Error(`Failed to query team permissions: ${response.status}`);
+    throw new Error(`Failed to query collaborators: ${response.status}`);
   }
   return response.data;
 };
 
-const hasCatalogInfo = async () => {
-  // checks if catalog-info.yaml exists in the root of the repository
-  const catalogInfo = fs.existsSync("catalog-info.yaml");
-  if (catalogInfo) {
-    console.log("catalog-info.yaml exists");
-  } else {
-    console.log("catalog-info.yaml does not exist");
-  }
-  return catalogInfo;
-};
-
 module.exports = {
   queryRepository,
-  queryTeamsForRepo,
-  queryTeamPermissionsForRepo,
-  hasCatalogInfo,
+  queryTeamsForRepository,
+  queryCollaboratorsForRepository,
 };
 
 
