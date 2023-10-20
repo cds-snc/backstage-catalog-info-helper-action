@@ -7,9 +7,12 @@ inputs:
   github-app-private-key:
     description: "The GitHub APP Private Key"
     required: true
-  github-app-installation-id:
-    description: "The GitHub APP Installation ID"
-    required: true
+  # github-app-installation-id:
+  #   description: "The GitHub APP Installation ID"
+  #   required: true
+  github-organization:
+    description: "The GitHub Organization"
+    default: ${{ github.repository_owner }}
 runs:
   using: composite
   steps:

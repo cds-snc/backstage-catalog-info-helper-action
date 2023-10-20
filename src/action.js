@@ -1,8 +1,9 @@
 "use strict";
 
-const core = require("@actions/core");
+// const core = require("@actions/core");
 const github = require("@actions/github");
 
+const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
 const { queryRepository, queryTeamsForRepository } = require("./query.js");
 const {
@@ -14,7 +15,26 @@ const {
 const action = async () => {
   const githubAppId = process.env.GITHUB_APP_ID;
   const githubAppPrivateKey = process.env.GITHUB_APP_PRIVATE_KEY;
-  const githubAppInstallationId = process.env.GITHUB_APP_INSTALLATION_ID;
+  const organization = process.env.GITHUB_ORGANIZATION;
+
+  const octokitAppAuth = new Octokit({
+    authStrategy: createAppAuth,
+    auth: {
+      appId: process.env.GH_APP_ID,
+      privateKey: process.env.GH_APP_PRIVATE_KEY,
+    },
+  });
+
+  const getInstallationId = async () => {
+    const { data: installations } =
+      await octokitAppAuth.apps.listInstallations();
+    const installation = installations.find(
+      (installation) => installation.account.login === organization
+    );
+    return installation.id;
+  };
+
+  const githubAppInstallationId = await getInstallationId();
 
   const auth = createAppAuth({
     appId: githubAppId,
