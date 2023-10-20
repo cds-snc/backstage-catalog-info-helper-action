@@ -13,6 +13,5 @@ jobs:
         uses: cds-snc/backstage-catalog-info-helper-action@dev
         with:
           github-app-id: ${{ secrets.SRE_BOT_RW_APP_ID }}
-          github-app-installation-id: ${{ secrets.SRE_BOT_RW_INSTALLATION_ID }}
-          github-app-private-key: ${{ secrets.SRE_BOT_RO_PRIVATE_KEY }}
-          
+          # github-app-installation-id: ${{ secrets.SRE_BOT_RW_INSTALLATION_ID }}
+          github-app-private-key: ${{ secrets.SRE_BOT_RW_PRIVATE_KEY }}
