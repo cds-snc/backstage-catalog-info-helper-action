@@ -24,6 +24,10 @@ runs:
       run: sh test.sh
     #   run: ls -la
       shell: bash
+      with:
+        github-app-id: ${{ inputs.github-app-id }}
+        github-app-private-key: ${{ inputs.github-app-private-key }}
+        github-app-installation-id: ${{ inputs.github-app-installation-id }}
     - name: Run backstage catalog helper
       run: node dist/index.js
       shell: bash
