@@ -13,13 +13,18 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Checkout
+    - name: Checkout Actions
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - name: Setup Node.js
       uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d
       with:
         node-version: "20.x"
-    - name: Run backstage catalog helper
+    - name: Build dist folder
+      run: |
+        npm install
+        npm run build
+      shell: bash
+    - name: Run Backstage Catalog Helper
       env:
         GITHUB_APP_ID: ${{ inputs.github-app-id }}
         GITHUB_APP_PRIVATE_KEY: ${{ inputs.github-app-private-key }}
@@ -42,6 +47,8 @@ runs:
         title: 'Add catalog-info.yaml'
         body: 'Add catalog-info.yaml'
         labels: 'backstage'
+        add-paths: |
+          catalog-info.yaml
 branding:
   icon: "file-text"
   color: "green"
