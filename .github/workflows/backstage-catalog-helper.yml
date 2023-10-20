@@ -8,7 +8,7 @@ jobs:
   update-catalog-info:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      # - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - name: Update catalog-info.yaml
         uses: cds-snc/backstage-catalog-info-helper-action@dev
         with:

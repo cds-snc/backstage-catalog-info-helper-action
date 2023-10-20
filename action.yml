@@ -13,10 +13,8 @@ inputs:
 runs:
   using: composite
   steps:
-    - run: echo "Hello World"
-      shell: bash
-    - run: echo ${{ inputs.github-app-id }}
-      shell: bash
+    - name: Checkout
+      uses: actions/checkout@vb4ffde65f46336ab88eb53be808477a3936bae11
     - name: Setup Node.js
       uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d
       with:
@@ -29,6 +27,19 @@ runs:
       run: |
         node dist/index.js
       shell: bash
+    - name: Create pull request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: 'Add catalog-info.yaml'
+        branch: 'backstage/catalog-info'
+        title: 'Add catalog-info.yaml'
+        body: 'Add catalog-info.yaml'
+        labels: 'backstage'
+        changes: |
+          add: |
+            catalog-info.yaml
+    
 branding:
   icon: "file-text"
   color: "green"
