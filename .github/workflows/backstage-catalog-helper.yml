@@ -7,16 +7,12 @@ on:
 jobs:
   update-catalog-info:
     runs-on: ubuntu-latest
-    env:
-      github-app-id: ${{ secrets.SRE_BOT_RO_APP_ID }}
-      github-app-installation-id: ${{ secrets.SRE_BOT_RO_INSTALLATION_ID }}
-      github-app-private-key: ${{ secrets.SRE_BOT_RO_PRIVATE_KEY }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - name: Update catalog-info.yaml
         uses: cds-snc/backstage-catalog-info-helper-action@dev
         with:
-          github-app-id: ${{ env.github-app-id }}
-          github-app-installation-id: ${{ env.github-app-installation-id }}
-          github-app-private-key: ${{ env.github-app-private-key }}
+          github-app-id: ${{ secrets.SRE_BOT_RO_APP_ID }}
+          github-app-installation-id: ${{ secrets.SRE_BOT_RO_INSTALLATION_ID }}
+          github-app-private-key: ${{ secrets.SRE_BOT_RO_PRIVATE_KEY }}
           
