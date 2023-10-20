@@ -26,7 +26,8 @@ runs:
         GITHUB_APP_ID: ${{ inputs.github-app-id }}
         GITHUB_APP_PRIVATE_KEY: ${{ inputs.github-app-private-key }}
         GITHUB_APP_INSTALLATION_ID: ${{ inputs.github-app-installation-id }}
-      run: node dist/index.js
+      run: |
+        node dist/index.js
       shell: bash
 branding:
   icon: "file-text"

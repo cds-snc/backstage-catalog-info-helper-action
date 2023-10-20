@@ -12,7 +12,7 @@ const {
 } = require("./catalog.js");
 
 const action = async () => {
-  const githubAppId = core.getInput("github-app-id");
+  const githubAppId = process.env.GITHUB_APP_ID;
   const githubAppPrivateKey = core.getInput("github-app-private-key");
   const githubAppInstallationId = core.getInput("github-app-installation-id");
 
