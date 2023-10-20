@@ -1,6 +1,5 @@
 "use strict";
 
-const core = require("@actions/core");
 const github = require("@actions/github");
 require("@octokit/auth-app");
 const { when } = require("jest-when");
@@ -36,6 +35,11 @@ jest.mock("./catalog.js");
 describe("action", () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    process.env = {
+      GITHUB_APP_ID: "github-app-id",
+      GITHUB_APP_PRIVATE_KEY: "github-app-private-key",
+      GITHUB_ORGANIZATION: "github-organization",
+    };
   });
 
   test("default flow", async () => {
@@ -66,17 +70,17 @@ describe("action", () => {
       },
     ];
 
-    when(core.getInput)
-      .calledWith("github-app-id")
+    when(process.env)
+      .calledWith("GITHUB_APP_ID")
       .mockReturnValue("github-app-id");
 
-    when(core.getInput)
-      .calledWith("github-app-installation-id")
-      .mockReturnValue("github-app-installation-id");
-
-    when(core.getInput)
-      .calledWith("github-app-private-key")
+    when(process.env)
+      .calledWith("GITHUB_APP_PRIVATE_KEY")
       .mockReturnValue("github-app-private-key");
+
+    when(process.env)
+      .calledWith("GITHUB_ORGANIZATION")
+      .mockReturnValue("github-organization");
 
     when(github.getOctokit).calledWith("token").mockReturnValue("octokit");
 
@@ -114,7 +118,7 @@ describe("action", () => {
     expect(queryTeamsForRepository).toHaveBeenCalledWith(
       "octokit",
       "owner",
-      "repo",
+      "repo"
     );
     expect(hasCatalogInfo).toReturnWith(false);
 
@@ -124,17 +128,17 @@ describe("action", () => {
   });
 
   test("catalog-info.yaml already exists", async () => {
-    when(core.getInput)
-      .calledWith("github-app-id")
+    when(process.env)
+      .calledWith("GITHUB_APP_ID")
       .mockReturnValue("github-app-id");
 
-    when(core.getInput)
-      .calledWith("github-app-installation-id")
-      .mockReturnValue("github-app-installation-id");
-
-    when(core.getInput)
-      .calledWith("github-app-private-key")
+    when(process.env)
+      .calledWith("GITHUB_APP_PRIVATE_KEY")
       .mockReturnValue("github-app-private-key");
+
+    when(process.env)
+      .calledWith("GITHUB_ORGANIZATION")
+      .mockReturnValue("github-organization");
 
     when(github.getOctokit).calledWith("token").mockReturnValue("octokit");
 
@@ -154,7 +158,7 @@ describe("action", () => {
     expect(queryTeamsForRepository).toHaveBeenCalledWith(
       "octokit",
       "owner",
-      "repo",
+      "repo"
     );
     expect(hasCatalogInfo).toReturnWith(true);
 
