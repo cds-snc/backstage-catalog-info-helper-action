@@ -80,11 +80,11 @@ describe("action", () => {
       },
     ];
 
-    const installations = [
+    const installationsData = [
       {
         id: 1,
         account: {
-          login: "my-org",
+          login: "github-organization",
         },
       },
       {
@@ -95,9 +95,21 @@ describe("action", () => {
       },
     ];
 
-    const githubAppId = process.env.GITHUB_APP_ID;
-    const githubAppPrivateKey = process.env.GITHUB_APP_PRIVATE_KEY;
-    const organization = process.env.GITHUB_ORGANIZATION;
+
+    when(Octokit).mockImplementation(() => {
+      return {
+        apps: {
+          listInstallations: jest
+            .fn()
+            .mockImplementation(() => ({ data: installationsData })),
+        },
+      };
+    });
+    const octokitMock = new Octokit();
+
+    when(octokitMock.apps.listInstallations)
+      .calledWith()
+      .mockReturnValue(installationsData);
 
     when(github.getOctokit).calledWith("token").mockReturnValue("octokit");
 
@@ -145,6 +157,36 @@ describe("action", () => {
   });
 
   test("catalog-info.yaml already exists", async () => {
+    
+    const installationsData = [
+      {
+        id: 1,
+        account: {
+          login: "github-organization",
+        },
+      },
+      {
+        id: 2,
+        account: {
+          login: "other-org",
+        },
+      },
+    ];
+
+    when(Octokit).mockImplementation(() => {
+      return {
+        apps: {
+          listInstallations: jest
+            .fn()
+            .mockImplementation(() => ({ data: installationsData })),
+        },
+      };
+    });
+    const octokitMock = new Octokit();
+
+    when(octokitMock.apps.listInstallations)
+      .calledWith()
+      .mockReturnValue(installationsData);
     when(github.getOctokit).calledWith("token").mockReturnValue("octokit");
 
     when(queryRepository)
