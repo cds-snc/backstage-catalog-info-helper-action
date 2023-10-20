@@ -7,9 +7,6 @@ inputs:
   github-app-private-key:
     description: "The GitHub APP Private Key"
     required: true
-  # github-app-installation-id:
-  #   description: "The GitHub APP Installation ID"
-  #   required: true
   github-organization:
     description: "The GitHub Organization"
     default: ${{ github.repository_owner }}
@@ -26,7 +23,7 @@ runs:
       env:
         GITHUB_APP_ID: ${{ inputs.github-app-id }}
         GITHUB_APP_PRIVATE_KEY: ${{ inputs.github-app-private-key }}
-        GITHUB_APP_INSTALLATION_ID: ${{ inputs.github-app-installation-id }}
+        GITHUB_ORGANIZATION: ${{ inputs.github-organization }}
       run: |
         node dist/index.js
       shell: bash
