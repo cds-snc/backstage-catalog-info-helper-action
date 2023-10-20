@@ -13,14 +13,14 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Checkout
+      uses: actions/checkout@vb4ffde65f46336ab88eb53be808477a3936bae11
     - name: impersonate Read ONLY GH App
       uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a
       id: generate_token
       with:
         app_id: ${{ inputs.github-app-id }}
         private_key: ${{ inputs.github-app-private-key }}
-    - name: Checkout
-      uses: actions/checkout@vb4ffde65f46336ab88eb53be808477a3936bae11
     - name: Setup Node.js
       uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d
       with:
