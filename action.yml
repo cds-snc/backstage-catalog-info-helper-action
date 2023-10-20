@@ -1,55 +1,54 @@
-name: 'Backstage Catalog Info Helper'
-description: 'A GitHub Action to help with Backstage Catalog Info'
+name: "Backstage Catalog Info Helper"
+description: "A GitHub Action to help with Backstage Catalog Info"
 inputs:
   github-app-id:
-    description: 'The GitHub APP ID'
+    description: "The GitHub APP ID"
     required: true
   github-app-private-key:
-    description: 'The GitHub APP Private Key'
+    description: "The GitHub APP Private Key"
     required: true
-  github-app-installation-id:
-    description: 'The GitHub APP Installation ID'
-    required: true
-# runs:
-#   using: 'node20'
-#   main: 'dist/index.js'
+  github-organization:
+    description: "The GitHub Organization"
+    default: ${{ github.repository_owner }}
 runs:
   using: composite
   steps:
+    - name: Checkout Actions
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - name: Setup Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d
       with:
-        node-version: '20.x'
-    - name: Install dependencies
-      run: npm install
+        node-version: "20.x"
+    - name: Build dist folder
+      run: |
+        npm install
+        npm run build
       shell: bash
-    - name: Build
-      run: npm run build
+    - name: Run Backstage Catalog Helper
+      env:
+        GITHUB_APP_ID: ${{ inputs.github-app-id }}
+        GITHUB_APP_PRIVATE_KEY: ${{ inputs.github-app-private-key }}
+        GITHUB_ORGANIZATION: ${{ inputs.github-organization }}
+      run: |
+        node dist/index.js
       shell: bash
-    - name: Run backstage catalog helper
-      run: node dist/index.js
-      shell: bash
+    - name: impersonate Read/Write GH App
+      uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a
+      id: generate_token
       with:
-        github-app-id: ${{ inputs.github-app-id }}
-        github-app-private-key: ${{ inputs.github-app-private-key }}
-        github-app-installation-id: ${{ inputs.github-app-installation-id }}
-    - name: Upload Catalog Info
-      uses: actions/upload-artifact@v2
-      with:
-        name: catalog-info
-        path: catalog-info.yaml
-    - name: Create PR
+        app_id: ${{ inputs.github-app-id }}
+        private_key: ${{ inputs.github-app-private-key }}
+    - name: Create pull request
       uses: peter-evans/create-pull-request@v3
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: 'Update catalog-info.yaml'
-        title: 'Update catalog-info.yaml'
-        body: 'Update catalog-info.yaml'
-        branch: 'update-catalog-info'
-        branch-suffix: timestamp
-        base: 'main'
-        labels: 'catalog-info'
-        draft: false
+        token: ${{ steps.generate_token.outputs.token}}
+        commit-message: 'Add catalog-info.yaml'
+        branch: 'backstage/catalog-info'
+        title: 'Add catalog-info.yaml'
+        body: 'Add catalog-info.yaml'
+        labels: 'backstage'
+        add-paths: |
+          catalog-info.yaml
 branding:
-  icon: 'file-text'
-  color: 'green'
+  icon: "file-text"
+  color: "green"
