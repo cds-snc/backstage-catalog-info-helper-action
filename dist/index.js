@@ -42293,49 +42293,46 @@ const {
 } = __nccwpck_require__(8675);
 
 const action = async () => {
-  const githubAppId = core.getInput("github-app-id", {
-    trimWhitespace: true,
-  });
-  const githubAppPrivateKey = core.getInput("github-app-private-key", {
-    trimWhitespace: true,
-  });
-  const githubAppInstallationId = core.getInput("github-app-installation-id", {
-    trimWhitespace: true,
-  });
+  const githubAppId = core.getInput("github-app-id");
+  const githubAppPrivateKey = core.getInput("github-app-private-key");
+  const githubAppInstallationId = core.getInput("github-app-installation-id");
 
-  const auth = createAppAuth({
-    appId: githubAppId,
-    privateKey: githubAppPrivateKey,
-  });
+  console.log("🔑 Authenticating with GitHub...");
+  console.log(`🔑 GitHub App ID: ${githubAppId}`);
 
-  const installationAuthentication = await auth({
-    type: "installation",
-    installationId: githubAppInstallationId,
-  });
+  // const auth = createAppAuth({
+  //   appId: githubAppId,
+  //   privateKey: githubAppPrivateKey,
+  // });
 
-  const octokit = github.getOctokit(installationAuthentication.token);
+  // const installationAuthentication = await auth({
+  //   type: "installation",
+  //   installationId: githubAppInstallationId,
+  // });
 
-  const owner = github.context.repo.owner;
-  const repo = github.context.repo.repo;
+  // const octokit = github.getOctokit(installationAuthentication.token);
 
-  // get current repository data
-  const repository = await queryRepository(octokit, owner, repo);
+  // const owner = github.context.repo.owner;
+  // const repo = github.context.repo.repo;
 
-  // get repository teams
-  console.log(`👥 Getting teams for ${owner}/${repo}...`);
-  const teams = await queryTeamsForRepository(octokit, owner, repo);
+  // // get current repository data
+  // const repository = await queryRepository(octokit, owner, repo);
 
-  // check if catalog-info.yaml exists
-  const hasCatalogInfoFile = await hasCatalogInfo();
+  // // get repository teams
+  // console.log(`👥 Getting teams for ${owner}/${repo}...`);
+  // const teams = await queryTeamsForRepository(octokit, owner, repo);
 
-  // if catalog-info.yaml does not exist, generate it
-  if (!hasCatalogInfoFile) {
-    console.log("Generating catalog-info.yaml...");
-    const catalogInfoContent = await generateCatalogInfo(repository, teams);
-    await saveCatalogInfo(catalogInfoContent);
-  } else {
-    console.log("catalog-info.yaml already exists.");
-  }
+  // // check if catalog-info.yaml exists
+  // const hasCatalogInfoFile = await hasCatalogInfo();
+
+  // // if catalog-info.yaml does not exist, generate it
+  // if (!hasCatalogInfoFile) {
+  //   console.log("Generating catalog-info.yaml...");
+  //   const catalogInfoContent = await generateCatalogInfo(repository, teams);
+  //   await saveCatalogInfo(catalogInfoContent);
+  // } else {
+  //   console.log("catalog-info.yaml already exists.");
+  // }
 };
 
 module.exports = { action };
