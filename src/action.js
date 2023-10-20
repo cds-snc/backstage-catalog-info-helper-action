@@ -20,8 +20,8 @@ const action = async () => {
   const octokitAppAuth = new Octokit({
     authStrategy: createAppAuth,
     auth: {
-      appId: process.env.GH_APP_ID,
-      privateKey: process.env.GH_APP_PRIVATE_KEY,
+      appId: githubAppId,
+      privateKey: githubAppPrivateKey,
     },
   });
 

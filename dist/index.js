@@ -42392,7 +42392,7 @@ try {
 "use strict";
 
 
-const core = __nccwpck_require__(2186);
+// const core = require("@actions/core");
 const github = __nccwpck_require__(5438);
 
 const { Octokit } = __nccwpck_require__(5375);
@@ -42412,8 +42412,8 @@ const action = async () => {
   const octokitAppAuth = new Octokit({
     authStrategy: createAppAuth,
     auth: {
-      appId: process.env.GH_APP_ID,
-      privateKey: process.env.GH_APP_PRIVATE_KEY,
+      appId: githubAppId,
+      privateKey: githubAppPrivateKey,
     },
   });
 
