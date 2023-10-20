@@ -19,39 +19,39 @@ const action = async () => {
   console.log("🔑 Authenticating with GitHub...");
   console.log(`🔑 GitHub App ID: ${githubAppId}`);
 
-  const auth = createAppAuth({
-    appId: githubAppId,
-    privateKey: githubAppPrivateKey,
-  });
+  // const auth = createAppAuth({
+  //   appId: githubAppId,
+  //   privateKey: githubAppPrivateKey,
+  // });
 
-  const installationAuthentication = await auth({
-    type: "installation",
-    installationId: githubAppInstallationId,
-  });
+  // const installationAuthentication = await auth({
+  //   type: "installation",
+  //   installationId: githubAppInstallationId,
+  // });
 
-  const octokit = github.getOctokit(installationAuthentication.token);
+  // const octokit = github.getOctokit(installationAuthentication.token);
 
-  const owner = github.context.repo.owner;
-  const repo = github.context.repo.repo;
+  // const owner = github.context.repo.owner;
+  // const repo = github.context.repo.repo;
 
-  // get current repository data
-  const repository = await queryRepository(octokit, owner, repo);
+  // // get current repository data
+  // const repository = await queryRepository(octokit, owner, repo);
 
-  // get repository teams
-  console.log(`👥 Getting teams for ${owner}/${repo}...`);
-  const teams = await queryTeamsForRepository(octokit, owner, repo);
+  // // get repository teams
+  // console.log(`👥 Getting teams for ${owner}/${repo}...`);
+  // const teams = await queryTeamsForRepository(octokit, owner, repo);
 
-  // check if catalog-info.yaml exists
-  const hasCatalogInfoFile = await hasCatalogInfo();
+  // // check if catalog-info.yaml exists
+  // const hasCatalogInfoFile = await hasCatalogInfo();
 
-  // if catalog-info.yaml does not exist, generate it
-  if (!hasCatalogInfoFile) {
-    console.log("Generating catalog-info.yaml...");
-    const catalogInfoContent = await generateCatalogInfo(repository, teams);
-    await saveCatalogInfo(catalogInfoContent);
-  } else {
-    console.log("catalog-info.yaml already exists.");
-  }
+  // // if catalog-info.yaml does not exist, generate it
+  // if (!hasCatalogInfoFile) {
+  //   console.log("Generating catalog-info.yaml...");
+  //   const catalogInfoContent = await generateCatalogInfo(repository, teams);
+  //   await saveCatalogInfo(catalogInfoContent);
+  // } else {
+  //   console.log("catalog-info.yaml already exists.");
+  // }
 };
 
 module.exports = { action };
