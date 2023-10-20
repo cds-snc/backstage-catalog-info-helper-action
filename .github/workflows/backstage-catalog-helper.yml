@@ -13,8 +13,8 @@ jobs:
       - name: Update catalog-info.yaml
         uses: cds-snc/backstage-catalog-info-helper-action@dev
         with:
-          # github-app-id: ${{ secrets.SRE_BOT_RW_APP_ID }}
-          # github-app-private-key: ${{ secrets.SRE_BOT_RW_APP_PRIVATE_KEY }}
-          github-app-id: ${{ secrets.SRE_BOT_RO_APP_ID }}
-          github-app-private-key: ${{ secrets.SRE_BOT_RO_PRIVATE_KEY }}
+          github-app-id: ${{ secrets.SRE_BOT_RW_APP_ID }}
+          github-app-private-key: ${{ secrets.SRE_BOT_RW_APP_PRIVATE_KEY }}
+          # github-app-id: ${{ secrets.SRE_BOT_RO_APP_ID }}
+          # github-app-private-key: ${{ secrets.SRE_BOT_RO_PRIVATE_KEY }}
           github-organization: ${{ github.repository_owner}}
