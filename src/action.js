@@ -12,15 +12,9 @@ const {
 } = require("./catalog.js");
 
 const action = async () => {
-  const githubAppId = core.getInput("github-app-id", {
-    trimWhitespace: true,
-  });
-  const githubAppPrivateKey = core.getInput("github-app-private-key", {
-    trimWhitespace: true,
-  });
-  const githubAppInstallationId = core.getInput("github-app-installation-id", {
-    trimWhitespace: true,
-  });
+  const githubAppId = core.getInput("github-app-id");
+  const githubAppPrivateKey = core.getInput("github-app-private-key");
+  const githubAppInstallationId = core.getInput("github-app-installation-id");
 
   const auth = createAppAuth({
     appId: githubAppId,
