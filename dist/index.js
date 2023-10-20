@@ -42392,9 +42392,7 @@ try {
 "use strict";
 
 
-// const core = require("@actions/core");
 const github = __nccwpck_require__(5438);
-
 const { Octokit } = __nccwpck_require__(5375);
 const { createAppAuth } = __nccwpck_require__(7541);
 const { queryRepository, queryTeamsForRepository } = __nccwpck_require__(869);
