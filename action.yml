@@ -18,6 +18,8 @@ runs:
   steps:
     - run: echo "Hello World"
       shell: bash
+    - run: echo ${{ INPUT_GITHUB-APP-ID }}
+      shell: bash
 #     - name: Setup Node.js
 #       uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d
 #       with:
