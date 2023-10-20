@@ -16,32 +16,17 @@ inputs:
 runs:
   using: composite
   steps:
-    # - run: echo ${{ inputs.github-app-id }}
-    #   shell: bash
     - name: Setup Node.js
       uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d
       with:
         node-version: '20.x'
-    # - name: Test if input variables present display true if not null/empty
-    #   # run: sh test.sh
+    - name: Test if input variables present display true if not null/empty
+      run: sh test.sh
     #   run: ls -la
-    #   shell: bash
+      shell: bash
     - name: Run backstage catalog helper
       run: node dist/index.js
       shell: bash
-      uses: 'node20'
-    # - name: Create PR
-    #   uses: peter-evans/create-pull-request@v3
-    #   with:
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     commit-message: 'Update catalog-info.yaml'
-    #     title: 'Update catalog-info.yaml'
-    #     body: 'Update catalog-info.yaml'
-    #     branch: 'update-catalog-info'
-    #     branch-suffix: timestamp
-    #     base: 'main'
-    #     labels: 'catalog-info'
-    #     draft: false
 branding:
   icon: 'file-text'
   color: 'green'
