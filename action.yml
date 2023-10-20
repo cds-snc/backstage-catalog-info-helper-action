@@ -1,14 +1,14 @@
-name: 'Backstage Catalog Info Helper'
-description: 'A GitHub Action to help with Backstage Catalog Info'
+name: "Backstage Catalog Info Helper"
+description: "A GitHub Action to help with Backstage Catalog Info"
 inputs:
   github-app-id:
-    description: 'The GitHub APP ID'
+    description: "The GitHub APP ID"
     required: true
   github-app-private-key:
-    description: 'The GitHub APP Private Key'
+    description: "The GitHub APP Private Key"
     required: true
   github-app-installation-id:
-    description: 'The GitHub APP Installation ID'
+    description: "The GitHub APP Installation ID"
     required: true
 # runs:
 #   using: 'node20'
@@ -23,19 +23,24 @@ runs:
     - name: Setup Node.js
       uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d
       with:
-        node-version: '20.x'
-    - name: Run backstage catalog helper
-      # run: node dist/index.js
-      run: node dist/index.js
-      shell: bash
+        node-version: "20.x"
+    - uses: "actions/github-script@v6"
       with:
-        github-app-id: ${{ inputs.github-app-id }}
-        github-app-private-key: ${{ inputs.github-app-private-key }}
-        github-app-installation-id: ${{ inputs.github-app-installation-id }}
+        script: |
+          const script = require("${{github.action_path}}/dist/index.js")
+          script({core})
+    # - name: Run backstage catalog helper
+    #   # run: node dist/index.js
+    #   run: node dist/index.js
+    #   shell: bash
+    #   env:
+    #     github-app-id: ${{ inputs.github-app-id }}
+    #     github-app-private-key: ${{ inputs.github-app-private-key }}
+    #     github-app-installation-id: ${{ inputs.github-app-installation-id }}
 #       env:
 #         github-app-id: ${{ INPUT_GITHUB-APP-ID }}
 #         github-app-private-key: ${{ INPUT_GITHUB-APP-PRIVATE-KEY }}
 #         github-app-installation-id: ${{ INPUT_GITHUB-APP-INSTALLATION-ID }}
 branding:
-  icon: 'file-text'
-  color: 'green'
+  icon: "file-text"
+  color: "green"
