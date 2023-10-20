@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-catalog-info-helper-action
+  description: >-
+    A GitHub Action to help generate a catalog-info.yaml file with basic key
+    data so that Backstage can parse it.
+spec:
+  type: website
+  lifecycle: experimental
+  owner: internal-sre
