@@ -13,8 +13,8 @@ const {
 
 const action = async () => {
   const githubAppId = process.env.GITHUB_APP_ID;
-  const githubAppPrivateKey = core.getInput("github-app-private-key");
-  const githubAppInstallationId = core.getInput("github-app-installation-id");
+  const githubAppPrivateKey = process.env.GITHUB_APP_PRIVATE_KEY;
+  const githubAppInstallationId = process.env.GITHUB_APP_INSTALLATION_ID;
 
   const auth = createAppAuth({
     appId: githubAppId,
