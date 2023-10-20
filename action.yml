@@ -13,6 +13,12 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: impersonate Read ONLY GH App
+      uses: tibdex/github-app-token@d43935be6b0b2c955141960c683050fd75911341
+      id: generate_token
+      with:
+        app_id: ${{ inputs.github-app-id }}
+        private_key: ${{ inputs.github-app-private-key }}
     - name: Checkout
       uses: actions/checkout@vb4ffde65f46336ab88eb53be808477a3936bae11
     - name: Setup Node.js
@@ -30,7 +36,7 @@ runs:
     - name: Create pull request
       uses: peter-evans/create-pull-request@v3
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ steps.generate_token.outputs.token}}
         commit-message: 'Add catalog-info.yaml'
         branch: 'backstage/catalog-info'
         title: 'Add catalog-info.yaml'
