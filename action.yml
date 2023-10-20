@@ -28,6 +28,10 @@ runs:
       # run: node dist/index.js
       run: node dist/index.js
       shell: bash
+      with:
+        github-app-id: ${{ inputs.github-app-id }}
+        github-app-private-key: ${{ inputs.github-app-private-key }}
+        github-app-installation-id: ${{ inputs.github-app-installation-id }}
 #       env:
 #         github-app-id: ${{ INPUT_GITHUB-APP-ID }}
 #         github-app-private-key: ${{ INPUT_GITHUB-APP-PRIVATE-KEY }}
