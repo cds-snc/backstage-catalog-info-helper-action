@@ -1,8 +1,6 @@
 "use strict";
 
-// const core = require("@actions/core");
 const github = require("@actions/github");
-
 const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
 const { queryRepository, queryTeamsForRepository } = require("./query.js");
