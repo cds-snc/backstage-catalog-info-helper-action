@@ -16,6 +16,9 @@ const action = async () => {
   const githubAppPrivateKey = core.getInput("github-app-private-key");
   const githubAppInstallationId = core.getInput("github-app-installation-id");
 
+  console.log("🔑 Authenticating with GitHub...");
+  console.log(`🔑 GitHub App ID: ${githubAppId}`);
+
   const auth = createAppAuth({
     appId: githubAppId,
     privateKey: githubAppPrivateKey,
