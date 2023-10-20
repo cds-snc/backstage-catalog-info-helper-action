@@ -9,8 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - run: echo ${{ github.repository_owner}}
       - name: Update catalog-info.yaml
         uses: cds-snc/backstage-catalog-info-helper-action@dev
         with:
           github-app-id: ${{ secrets.SRE_BOT_RW_APP_ID }}
           github-app-private-key: ${{ secrets.SRE_BOT_RW_APP_PRIVATE_KEY }}
+          github-organization: ${{ github.repository_owner}}
