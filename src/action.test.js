@@ -2,6 +2,7 @@
 
 const github = require("@actions/github");
 require("@octokit/auth-app");
+const { Octokit } = require("@octokit/rest");
 const { when } = require("jest-when");
 
 const { action } = require("./action.js");
@@ -29,6 +30,15 @@ jest.mock("@octokit/auth-app", () => ({
     token: "token",
   }),
 }));
+jest.mock("@octokit/rest", () => {
+  return {
+    Octokit: jest.fn().mockImplementation({
+      apps: {
+        listInstallations: jest.fn(),
+      },
+    }),
+  };
+});
 jest.mock("./query.js");
 jest.mock("./catalog.js");
 
@@ -70,17 +80,24 @@ describe("action", () => {
       },
     ];
 
-    when(process.env)
-      .calledWith("GITHUB_APP_ID")
-      .mockReturnValue("github-app-id");
+    const installations = [
+      {
+        id: 1,
+        account: {
+          login: "my-org",
+        },
+      },
+      {
+        id: 2,
+        account: {
+          login: "other-org",
+        },
+      },
+    ];
 
-    when(process.env)
-      .calledWith("GITHUB_APP_PRIVATE_KEY")
-      .mockReturnValue("github-app-private-key");
-
-    when(process.env)
-      .calledWith("GITHUB_ORGANIZATION")
-      .mockReturnValue("github-organization");
+    const githubAppId = process.env.GITHUB_APP_ID;
+    const githubAppPrivateKey = process.env.GITHUB_APP_PRIVATE_KEY;
+    const organization = process.env.GITHUB_ORGANIZATION;
 
     when(github.getOctokit).calledWith("token").mockReturnValue("octokit");
 
@@ -128,18 +145,6 @@ describe("action", () => {
   });
 
   test("catalog-info.yaml already exists", async () => {
-    when(process.env)
-      .calledWith("GITHUB_APP_ID")
-      .mockReturnValue("github-app-id");
-
-    when(process.env)
-      .calledWith("GITHUB_APP_PRIVATE_KEY")
-      .mockReturnValue("github-app-private-key");
-
-    when(process.env)
-      .calledWith("GITHUB_ORGANIZATION")
-      .mockReturnValue("github-organization");
-
     when(github.getOctokit).calledWith("token").mockReturnValue("octokit");
 
     when(queryRepository)
