@@ -24,23 +24,9 @@ runs:
       uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d
       with:
         node-version: "20.x"
-    - uses: "actions/github-script@v6"
-      with:
-        script: |
-          const script = require("${{github.action_path}}/dist/index.js")
-          script({core})
-    # - name: Run backstage catalog helper
-    #   # run: node dist/index.js
-    #   run: node dist/index.js
-    #   shell: bash
-    #   env:
-    #     github-app-id: ${{ inputs.github-app-id }}
-    #     github-app-private-key: ${{ inputs.github-app-private-key }}
-    #     github-app-installation-id: ${{ inputs.github-app-installation-id }}
-#       env:
-#         github-app-id: ${{ INPUT_GITHUB-APP-ID }}
-#         github-app-private-key: ${{ INPUT_GITHUB-APP-PRIVATE-KEY }}
-#         github-app-installation-id: ${{ INPUT_GITHUB-APP-INSTALLATION-ID }}
+    - name: Run backstage catalog helper
+      run: node dist/index.js
+      shell: bash
 branding:
   icon: "file-text"
   color: "green"
