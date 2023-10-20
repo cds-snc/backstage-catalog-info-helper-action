@@ -10,9 +10,6 @@ inputs:
   github-app-installation-id:
     description: "The GitHub APP Installation ID"
     required: true
-# runs:
-#   using: 'node20'
-#   main: 'dist/index.js'
 runs:
   using: composite
   steps:
@@ -25,6 +22,10 @@ runs:
       with:
         node-version: "20.x"
     - name: Run backstage catalog helper
+      env:
+        GITHUB_APP_ID: ${{ inputs.github-app-id }}
+        GITHUB_APP_PRIVATE_KEY: ${{ inputs.github-app-private-key }}
+        GITHUB_APP_INSTALLATION_ID: ${{ inputs.github-app-installation-id }}
       run: node dist/index.js
       shell: bash
 branding:
