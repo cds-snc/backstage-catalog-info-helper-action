@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update catalog-info.yaml
-        uses: cds-snc/backstage-catalog-info-helper-action@v0.1.0
+        uses: cds-snc/backstage-catalog-info-helper-action@c1c6c289c4f83ef20e8cb39fbbc4c19e9b0abbdb # v0.1.0
         with:
           github-app-id: ${{ secrets.SRE_BOT_RW_APP_ID }}
           github-app-private-key: ${{ secrets.SRE_BOT_RW_APP_PRIVATE_KEY }}

@@ -16,7 +16,7 @@ runs:
     - name: Checkout Actions
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - name: Setup Node.js
-      uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d
+      uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65
       with:
         node-version: "20.x"
     - name: Build dist folder
@@ -39,7 +39,7 @@ runs:
         app_id: ${{ inputs.github-app-id }}
         private_key: ${{ inputs.github-app-private-key }}
     - name: Create pull request
-      uses: peter-evans/create-pull-request@v3
+      uses: peter-evans/create-pull-request@18f7dc018cc2cd597073088f7c7591b9d1c02672 # v3.14.0
       with:
         token: ${{ steps.generate_token.outputs.token}}
         commit-message: 'Add catalog-info.yaml'
