@@ -43,8 +43,11 @@ jest.mock("./query.js");
 jest.mock("./catalog.js");
 
 describe("action", () => {
+  // eslint-disable-next-line no-unused-vars
+  let consoleSpy;
   beforeEach(() => {
     jest.resetAllMocks();
+    consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
     process.env = {
       GITHUB_APP_ID: "github-app-id",
       GITHUB_APP_PRIVATE_KEY: "github-app-private-key",
