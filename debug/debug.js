@@ -4,7 +4,7 @@ const fs = require("fs");
 const github = require("@actions/github");
 const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
-const { queryRepository, queryTeamsForRepository } = require("../src/query.js");
+const { queryRepository, queryTeamsForRepository, queryLanguagesForRepository } = require("../src/query.js");
 const {
   hasCatalogInfo,
   parseCatalogInfo,
@@ -51,7 +51,8 @@ const run = async () => {
   console.log(`Owner: ${owner}\nRepo: ${repo}`);
   console.log(" Repository data sent to Azure Log Analytics");
 
-  console.log("✅ Generating catalog-info.yaml...");
+
+  console.log("✅ Getting repository data...");
   // get current repository data
   const repository = await queryRepository(octokit, owner, repo);
   console.log("Repository data");
@@ -59,12 +60,25 @@ const run = async () => {
   console.log(repository);
   console.log(repository);
 
+  console.log("✅ Getting project license...");
+  console.log("===========================");
+  console.log(Object.entries(repository.license))
+
   // get repository teams
   console.log(`👥 Getting teams for ${owner}/${repo}...`);
   const teams = await queryTeamsForRepository(octokit, owner, repo);
   console.log("Teams");
   console.log("=====");
   console.log(teams);
+
+
+  // get repository languages
+  console.log(`👥 Getting languages for ${owner}/${repo}...`);
+  const languages = await queryLanguagesForRepository(octokit, owner, repo);
+  console.log("Languages");
+  console.log("=====");
+  console.log(languages);
+
 
   // get repository team permissions
   if (teams.length === 0) {
@@ -99,7 +113,7 @@ const run = async () => {
   // generate catalog-info.yaml
   console.log("✅ Generating catalog-info.yaml...");
   console.log("============================");
-  const catalogInfoContent = await generateCatalogInfo(repository, teams);
+  const catalogInfoContent = await generateCatalogInfo(repository, teams, languages);
   console.log(catalogInfoContent);
 
   // save catalog-info.yaml
