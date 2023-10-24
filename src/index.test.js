@@ -12,7 +12,6 @@ jest.mock("./action.js", function () {
 describe("index.js", () => {
   test("calls action if resolved", async () => {
     when(action).calledWith().mockResolvedValue();
-
     await action();
     expect(action).toBeCalled();
   });
