@@ -150,6 +150,7 @@ describe("generateCatalogInfo", () => {
     };
     const teams = [];
 
+
     const result = await generateCatalogInfo(repository, teams);
     expect(result).toEqual({
       apiVersion: "backstage.io/v1alpha1",
@@ -190,6 +191,63 @@ describe("generateCatalogInfo", () => {
         type: "website",
         lifecycle: "experimental",
         owner: "team-1",
+      },
+    });
+  });
+
+  test("should return the catalogInfo object with metadata tags for languages if languages are present", async () => {
+    const repository = {
+      name: "component name",
+      description: "component description",
+      owner: { login: "component owner" },
+    };
+    const teams = []
+    const languages = { JavaScript: 100, HTML: 50, CSS: 50 };
+
+    const result = await generateCatalogInfo(repository, teams, languages);
+    expect(result).toEqual({
+      apiVersion: "backstage.io/v1alpha1",
+      kind: "Component",
+      metadata: {
+        name: "component name",
+        description: "component description",
+        tags: ["JavaScript", "HTML", "CSS"],
+      },
+      spec: {
+        type: "website",
+        lifecycle: "experimental",
+        owner: "component owner",
+      },
+    });
+  });
+
+  test('should return the catalogInfo object with a license label if the repository has a license', async () => {
+    const repository = {
+      name: "component name",
+      description: "component description",
+      owner: { login: "component owner" },
+      license: {
+        key: "apache-2.0",
+        name: "Apache License 2.0",
+        spdx_id: "Apache-2.0",
+      },
+    };
+    const teams = []
+    const languages = {  };
+
+    const result = await generateCatalogInfo(repository, teams, languages);
+    expect(result).toEqual({
+      apiVersion: "backstage.io/v1alpha1",
+      kind: "Component",
+      metadata: {
+        name: "component name",
+        description: "component description",
+        labels: {"license": "Apache-2.0"}
+      },
+      spec: {
+        type: "website",
+        lifecycle: "experimental",
+        owner: "component owner",
       },
     });
   });

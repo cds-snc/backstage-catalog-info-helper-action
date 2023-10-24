@@ -39,8 +39,12 @@ const getEntityOwners = async (teams) => {
   return owner;
 };
 
-const generateCatalogInfo = async (repository, teams) => {
-  const componentOwner = await getEntityOwners(teams);
+const generateCatalogInfo = async (repository, teams = [], languages = {}) => {
+  const entityOwners = await getEntityOwners(teams);
+  const languagesList = Object.entries(languages).map(
+    (language) => language[0]
+  );
+  const license = repository.license ? repository.license.spdx_id : undefined;
   const catalogInfo = {
     apiVersion: "backstage.io/v1alpha1",
     kind: "Component",
@@ -52,11 +56,27 @@ const generateCatalogInfo = async (repository, teams) => {
       type: "website",
       lifecycle: "experimental",
       owner:
-        componentOwner.length === 1
-          ? componentOwner[0].slug
+        entityOwners.length === 1
+          ? entityOwners[0].slug
           : repository.owner.login,
     },
   };
+
+  if (languagesList.length > 0) {
+    if (catalogInfo.metadata.tags === undefined) {
+      catalogInfo.metadata.tags = [];
+    }
+    languagesList.forEach((language) => {
+      catalogInfo.metadata.tags.push(language);
+    });
+  }
+
+  if (license !== undefined) {
+    if (catalogInfo.metadata.labels === undefined) {
+      catalogInfo.metadata.labels = {};
+    }
+    catalogInfo.metadata.labels.license = license;
+  }
 
   return catalogInfo;
 };
