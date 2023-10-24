@@ -5,7 +5,7 @@ const {
   queryRepository,
   queryTeamsForRepository,
   queryCollaboratorsForRepository,
-  //   queryCollaboratorsForRepository,
+  queryLanguagesForRepository,
 } = require("./query");
 
 describe("queryRepository", () => {
@@ -56,7 +56,7 @@ describe("queryRepository", () => {
       .mockReturnValue(response);
 
     await expect(queryRepository(octokit, owner, repo)).rejects.toThrow(
-      `Failed to query repository: ${response.status}`,
+      `Failed to query repository: ${response.status}`
     );
   });
 });
@@ -137,7 +137,7 @@ describe("queryTeamsForRepository", () => {
       .mockReturnValue(response);
 
     await expect(queryTeamsForRepository(octokit, owner, repo)).rejects.toThrow(
-      `Failed to query teams: ${response.status}`,
+      `Failed to query teams: ${response.status}`
     );
   });
 });
@@ -217,7 +217,58 @@ describe("queryCollaboratorsForRepository", () => {
       .mockReturnValue(response);
 
     await expect(
-      queryCollaboratorsForRepository(octokit, owner, repo),
+      queryCollaboratorsForRepository(octokit, owner, repo)
     ).rejects.toThrow(`Failed to query collaborators: ${response.status}`);
+  });
+});
+
+describe("queryLanguagesForRepository", () => {
+  test("returns the languages data if the response status is 200", async () => {
+    const octokit = {
+      rest: {
+        repos: {
+          listLanguages: jest.fn(),
+        },
+      },
+    };
+
+    const response = {
+      status: 200,
+      data: {
+        JavaScript: 100,
+        HTML: 50,
+      },
+    };
+    const owner = "owner";
+    const repo = "repo";
+
+    when(octokit.rest.repos.listLanguages)
+      .calledWith({ owner, repo })
+      .mockReturnValue(response);
+
+    const result = await queryLanguagesForRepository(octokit, owner, repo);
+
+    expect(result).toEqual(response.data);
+  });
+  test("throws an error if the request failed", async () => {
+    const octokit = {
+      rest: {
+        repos: {
+          listLanguages: jest.fn(),
+        },
+      },
+    };
+    const response = {
+      status: 400,
+    };
+    const owner = "owner";
+    const repo = "repo";
+
+    when(octokit.rest.repos.listLanguages)
+      .calledWith({ owner, repo })
+      .mockReturnValue(response);
+    await expect(
+      queryLanguagesForRepository(octokit, owner, repo)
+    ).rejects.toThrow(`Failed to query languages: ${response.status}`);
   });
 });
