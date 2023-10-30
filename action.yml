@@ -17,10 +17,12 @@ runs:
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       with:
         fetch-depth: 0
+      working-directory: ./
     - name: Setup Node.js
       uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d
       with:
         node-version: "20.x"
+      working-directory: ./
     - name: Build dist folder
       run: |
         echo "Showing the current directory"
@@ -30,6 +32,7 @@ runs:
         npm install
         npm run build --if-present
       shell: bash
+      working-directory: ./
     - name: Run Backstage Catalog Helper
       env:
         GITHUB_APP_ID: ${{ inputs.github-app-id }}
@@ -39,6 +42,7 @@ runs:
         pwd
         node dist/index.js
       shell: bash
+      working-directory: ./
     - name: impersonate Read/Write GH App
       uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a
       id: generate_token
