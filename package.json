@@ -1,6 +1,6 @@
 {
   "name": "backstage-catalog-info-helper-action",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "This repository contains a GitHub Action that helps you to generate a catalog-info.yaml file for your Backstage catalog.",
   "main": "index.js",
   "repository": {
