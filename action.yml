@@ -1,10 +1,10 @@
 name: "Backstage Catalog Info Helper"
 description: "A GitHub Action to help with Backstage Catalog Info"
 inputs:
-  github-app-id:
+  github_app_id:
     description: "The GitHub APP ID"
     required: true
-  github-app-private-key:
+  github_app_private_key:
     description: "The GitHub APP Private Key"
     required: true
   github-organization:
