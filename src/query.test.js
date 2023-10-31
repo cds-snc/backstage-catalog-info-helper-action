@@ -56,7 +56,7 @@ describe("queryRepository", () => {
       .mockReturnValue(response);
 
     await expect(queryRepository(octokit, owner, repo)).rejects.toThrow(
-      `Failed to query repository: ${response.status}`
+      `Failed to query repository: ${response.status}`,
     );
   });
 });
@@ -137,7 +137,7 @@ describe("queryTeamsForRepository", () => {
       .mockReturnValue(response);
 
     await expect(queryTeamsForRepository(octokit, owner, repo)).rejects.toThrow(
-      `Failed to query teams: ${response.status}`
+      `Failed to query teams: ${response.status}`,
     );
   });
 });
@@ -217,7 +217,7 @@ describe("queryCollaboratorsForRepository", () => {
       .mockReturnValue(response);
 
     await expect(
-      queryCollaboratorsForRepository(octokit, owner, repo)
+      queryCollaboratorsForRepository(octokit, owner, repo),
     ).rejects.toThrow(`Failed to query collaborators: ${response.status}`);
   });
 });
@@ -268,7 +268,7 @@ describe("queryLanguagesForRepository", () => {
       .calledWith({ owner, repo })
       .mockReturnValue(response);
     await expect(
-      queryLanguagesForRepository(octokit, owner, repo)
+      queryLanguagesForRepository(octokit, owner, repo),
     ).rejects.toThrow(`Failed to query languages: ${response.status}`);
   });
 });

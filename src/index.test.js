@@ -21,5 +21,4 @@ describe("index.js", () => {
     when(action).calledWith().mockRejectedValue(err);
     await expect(action()).rejects.toEqual(err);
   });
-
 });

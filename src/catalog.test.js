@@ -150,7 +150,6 @@ describe("generateCatalogInfo", () => {
     };
     const teams = [];
 
-
     const result = await generateCatalogInfo(repository, teams);
     expect(result).toEqual({
       apiVersion: "backstage.io/v1alpha1",
@@ -201,7 +200,7 @@ describe("generateCatalogInfo", () => {
       description: "component description",
       owner: { login: "component owner" },
     };
-    const teams = []
+    const teams = [];
     const languages = { JavaScript: 100, HTML: 50, CSS: 50 };
 
     const result = await generateCatalogInfo(repository, teams, languages);
@@ -221,7 +220,7 @@ describe("generateCatalogInfo", () => {
     });
   });
 
-  test('should return the catalogInfo object with a license label if the repository has a license', async () => {
+  test("should return the catalogInfo object with a license label if the repository has a license", async () => {
     const repository = {
       name: "component name",
       description: "component description",
@@ -232,8 +231,8 @@ describe("generateCatalogInfo", () => {
         spdx_id: "Apache-2.0",
       },
     };
-    const teams = []
-    const languages = {  };
+    const teams = [];
+    const languages = {};
 
     const result = await generateCatalogInfo(repository, teams, languages);
     expect(result).toEqual({
@@ -242,7 +241,7 @@ describe("generateCatalogInfo", () => {
       metadata: {
         name: "component name",
         description: "component description",
-        labels: {"license": "Apache-2.0"}
+        labels: { license: "Apache-2.0" },
       },
       spec: {
         type: "website",

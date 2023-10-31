@@ -37,7 +37,7 @@ const queryCollaboratorsForRepository = async (octokit, owner, repo) => {
 };
 
 const queryLanguagesForRepository = async (octokit, owner, repo) => {
-  const response = await octokit.rest.repos.listLanguages({owner, repo});
+  const response = await octokit.rest.repos.listLanguages({ owner, repo });
   if (response.status !== 200) {
     throw new Error(`Failed to query languages: ${response.status}`);
   }
@@ -48,5 +48,5 @@ module.exports = {
   queryRepository,
   queryTeamsForRepository,
   queryCollaboratorsForRepository,
-  queryLanguagesForRepository
+  queryLanguagesForRepository,
 };

@@ -42,7 +42,7 @@ const getEntityOwners = async (teams) => {
 const generateCatalogInfo = async (repository, teams = [], languages = {}) => {
   const entityOwners = await getEntityOwners(teams);
   const languagesList = Object.entries(languages).map(
-    (language) => language[0]
+    (language) => language[0],
   );
   const license = repository.license ? repository.license.spdx_id : undefined;
   const catalogInfo = {
