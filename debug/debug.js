@@ -4,7 +4,7 @@ const fs = require("fs");
 const github = require("@actions/github");
 const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
-const { queryRepository, queryTeamsForRepository, queryLanguagesForRepository } = require("../src/query.js");
+const { queryRepository, queryRepositoriesForOrg ,queryTeamsForRepository, queryLanguagesForRepository } = require("../src/query.js");
 const {
   hasCatalogInfo,
   parseCatalogInfo,
@@ -58,7 +58,13 @@ const run = async () => {
   console.log("Repository data");
   console.log("===============");
   console.log(repository);
-  console.log(repository);
+
+  console.log("✅ Getting repositories for organization...");
+  console.log("=========================================");
+  const repositories = await queryRepositoriesForOrg(octokit, owner);
+  console.log(repositories);
+  console.log(`Found ${repositories.length} repositories for ${owner}`);
+
 
   console.log("✅ Getting project license...");
   console.log("===========================");
