@@ -11,6 +11,20 @@ const queryRepository = async (octokit, owner, repo) => {
   return response.data;
 };
 
+const queryRepositoriesForOrg = async (octokit, org) => {
+  const options = octokit.rest.repos.listForOrg.endpoint.merge({
+    org,
+    per_page: 100,
+  });
+  const response = await octokit.paginate(options);
+
+  if (!response) {
+    throw new Error(`Failed to query repositories for org: ${org}`);
+  }
+
+  return response;
+};
+
 const queryTeamsForRepository = async (octokit, owner, repo) => {
   const response = await octokit.rest.repos.listTeams({
     owner,
@@ -46,6 +60,7 @@ const queryLanguagesForRepository = async (octokit, owner, repo) => {
 
 module.exports = {
   queryRepository,
+  queryRepositoriesForOrg,
   queryTeamsForRepository,
   queryCollaboratorsForRepository,
   queryLanguagesForRepository,

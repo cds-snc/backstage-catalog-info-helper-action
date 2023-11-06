@@ -3,6 +3,7 @@
 const { when } = require("jest-when");
 const {
   queryRepository,
+  queryRepositoriesForOrg,
   queryTeamsForRepository,
   queryCollaboratorsForRepository,
   queryLanguagesForRepository,
@@ -58,6 +59,57 @@ describe("queryRepository", () => {
     await expect(queryRepository(octokit, owner, repo)).rejects.toThrow(
       `Failed to query repository: ${response.status}`,
     );
+  });
+});
+
+describe("queryRepositoriesForOrg", () => {
+  const repositories = [
+    { name: "repo1", archived: false, visibility: "public" },
+    { name: "repo2", archived: true, visibility: "private" },
+    { name: "repo3", archived: false, visibility: "private" },
+    { name: "repo4", archived: true, visibility: "public" },
+  ];
+
+  test("returns an array of repositories if successful", async () => {
+    const octokit = {
+      rest: {
+        repos: {
+          listForOrg: {
+            endpoint: {
+              merge: jest.fn(),
+            },
+          },
+        },
+      },
+      paginate: jest.fn().mockResolvedValue(repositories),
+    };
+
+    const org = "octocat";
+
+    const result = await queryRepositoriesForOrg(octokit, org);
+
+    expect(result).toEqual(repositories);
+  });
+
+  test("throws an error if the request failed", async () => {
+    const octokit = {
+      rest: {
+        repos: {
+          listForOrg: {
+            endpoint: {
+              merge: jest.fn(),
+            },
+          },
+        },
+      },
+      paginate: jest.fn().mockRejectedValue(new Error("Request failed")),
+    };
+
+    const org = "octocat";
+
+    await expect(
+      queryRepositoriesForOrg(octokit, org),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`"Request failed"`);
   });
 });
 
