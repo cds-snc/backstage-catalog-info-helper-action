@@ -1,13 +1,89 @@
 "use strict";
 
 const { when } = require("jest-when");
+const github = require("@actions/github");
+const { Octokit } = require("@octokit/rest");
+const { createAppAuth } = require("@octokit/auth-app");
 const {
+  setupOctokit,
   queryRepository,
   queryRepositoriesForOrg,
   queryTeamsForRepository,
   queryCollaboratorsForRepository,
   queryLanguagesForRepository,
 } = require("./query");
+jest.mock("@actions/github");
+jest.mock("@octokit/auth-app");
+jest.mock("@octokit/rest");
+
+describe("setupOctokit", () => {
+  const installationsData = [
+    {
+      id: 1,
+      account: {
+        login: "github-organization",
+      },
+    },
+    {
+      id: 2,
+      account: {
+        login: "other-org",
+      },
+    },
+  ];
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test("returns a new Octokit instance with the correct installation token", async () => {
+    const githubAppId = "github-app-id";
+    const githubAppPrivateKey = "github-app-private-key";
+    const organization = "github-organization";
+
+    when(Octokit).mockImplementation(() => {
+      return {
+        apps: {
+          listInstallations: jest
+            .fn()
+            .mockResolvedValue({ data: installationsData }),
+        },
+      };
+    });
+
+    when(createAppAuth).mockImplementation(() => {
+      return async ({ type, installationId }) => {
+        return {
+          type: type,
+          token: "mock_token",
+          installationId: installationId,
+        };
+      };
+    });
+
+    when(github.getOctokit).calledWith("mock_token").mockReturnValue("octokitInstance");
+
+    const result = await setupOctokit(
+      githubAppId,
+      githubAppPrivateKey,
+      organization,
+    );
+
+    expect(result).toBe("octokitInstance");
+
+    expect(Octokit).toHaveBeenCalledWith({
+      authStrategy: createAppAuth,
+      auth: {
+        appId: githubAppId,
+        privateKey: githubAppPrivateKey,
+      },
+    });
+    expect(createAppAuth).toHaveBeenCalledWith({
+      appId: githubAppId,
+      privateKey: githubAppPrivateKey,
+    });
+  });
+});
 
 describe("queryRepository", () => {
   test("returns the repository data if the response status is 200", async () => {

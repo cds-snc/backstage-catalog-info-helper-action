@@ -1,5 +1,42 @@
 "use strict";
 
+const github = require("@actions/github");
+const { Octokit } = require("@octokit/rest");
+const { createAppAuth } = require("@octokit/auth-app");
+
+const setupOctokit = async (githubAppId, githubAppPrivateKey, organization) => {
+  const octokitAppAuth = new Octokit({
+    authStrategy: createAppAuth,
+    auth: {
+      appId: githubAppId,
+      privateKey: githubAppPrivateKey,
+    },
+  });
+
+  const getInstallationId = async () => {
+    const { data: installations } =
+      await octokitAppAuth.apps.listInstallations();
+    const installation = installations.find(
+      (installation) => installation.account.login === organization,
+    );
+    return installation.id;
+  };
+
+  const githubAppInstallationId = await getInstallationId();
+
+  const auth = createAppAuth({
+    appId: githubAppId,
+    privateKey: githubAppPrivateKey,
+  });
+
+  const installationAuthentication = await auth({
+    type: "installation",
+    installationId: githubAppInstallationId,
+  });
+
+  return github.getOctokit(installationAuthentication.token);
+};
+
 const queryRepository = async (octokit, owner, repo) => {
   const response = await octokit.rest.repos.get({
     owner,
@@ -59,6 +96,7 @@ const queryLanguagesForRepository = async (octokit, owner, repo) => {
 };
 
 module.exports = {
+  setupOctokit,
   queryRepository,
   queryRepositoriesForOrg,
   queryTeamsForRepository,
