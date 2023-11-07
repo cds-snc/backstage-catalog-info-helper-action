@@ -2,9 +2,9 @@
 
 const fs = require("fs");
 const github = require("@actions/github");
-const { Octokit } = require("@octokit/rest");
-const { createAppAuth } = require("@octokit/auth-app");
-const { queryRepository, queryRepositoriesForOrg ,queryTeamsForRepository, queryLanguagesForRepository } = require("../src/query.js");
+// const { Octokit } = require("@octokit/rest");
+// const { createAppAuth } = require("@octokit/auth-app");
+const { setupOctokit,queryRepository, queryRepositoriesForOrg ,queryTeamsForRepository, queryLanguagesForRepository } = require("../src/query.js");
 const {
   hasCatalogInfo,
   parseCatalogInfo,
@@ -13,37 +13,43 @@ const {
   saveCatalogInfo,
 } = require("../src/catalog.js");
 
-const octokitAppAuth = new Octokit({
-  authStrategy: createAppAuth,
-  auth: {
-    appId: process.env.GH_APP_ID,
-    privateKey: process.env.GH_APP_PRIVATE_KEY,
-  },
-});
+// const octokitAppAuth = new Octokit({
+//   authStrategy: createAppAuth,
+//   auth: {
+//     appId: process.env.GH_APP_ID,
+//     privateKey: process.env.GH_APP_PRIVATE_KEY,
+//   },
+// });
 
-const getInstallationId = async () => {
-  const { data: installations } = await octokitAppAuth.apps.listInstallations();
-  const installation = installations.find(
-    (installation) => installation.account.login === "cds-snc"
-  );
-  return installation.id;
-};
+// const getInstallationId = async () => {
+//   const { data: installations } = await octokitAppAuth.apps.listInstallations();
+//   const installation = installations.find(
+//     (installation) => installation.account.login === "cds-snc"
+//   );
+//   return installation.id;
+// };
 
 const run = async () => {
-  console.log("Getting installation ID...");
-  const installationId = await getInstallationId();
-  console.log(installationId);
+  // console.log("Getting installation ID...");
+  // const installationId = await getInstallationId();
+  // console.log(installationId);
 
-  const auth = createAppAuth({
-    appId: process.env.GH_APP_ID,
-    privateKey: process.env.GH_APP_PRIVATE_KEY,
-  });
+  // const auth = createAppAuth({
+  //   appId: process.env.GH_APP_ID,
+  //   privateKey: process.env.GH_APP_PRIVATE_KEY,
+  // });
 
-  const installationAuthentication = await auth({
-    type: "installation",
-    installationId,
-  });
-  const octokit = github.getOctokit(installationAuthentication.token);
+  // const installationAuthentication = await auth({
+  //   type: "installation",
+  //   installationId,
+  // });
+
+  const githubAppId = process.env.GH_APP_ID;
+  const githubAppPrivateKey = process.env.GH_APP_PRIVATE_KEY;
+  const organization = github.context.repo.owner;
+
+  const octokit = await setupOctokit(githubAppId, githubAppPrivateKey, organization);
+  // const octokit = github.getOctokit(installationAuthentication.token);
 
   const owner = github.context.repo.owner;
   const repo = github.context.repo.repo;

@@ -2,9 +2,14 @@
 
 const core = require("@actions/core");
 const github = require("@actions/github");
-const { Octokit } = require("@octokit/rest");
-const { createAppAuth } = require("@octokit/auth-app");
-const { queryRepository, queryTeamsForRepository } = require("./query.js");
+// const { Octokit } = require("@octokit/rest");
+// const { createAppAuth } = require("@octokit/auth-app");
+const {
+  setupOctokit,
+  queryRepository,
+  queryRepositoriesForOrg,
+  queryTeamsForRepository,
+} = require("./query.js");
 const {
   hasCatalogInfo,
   generateCatalogInfo,
@@ -12,43 +17,23 @@ const {
 } = require("./catalog.js");
 
 const action = async () => {
+  // get inputs
   const githubAppId = core.getInput("github_app_id");
   const githubAppPrivateKey = core.getInput("github_app_private_key");
   const organization = core.getInput("github_organization");
-
-  const octokitAppAuth = new Octokit({
-    authStrategy: createAppAuth,
-    auth: {
-      appId: githubAppId,
-      privateKey: githubAppPrivateKey,
-    },
-  });
-
-  const getInstallationId = async () => {
-    const { data: installations } =
-      await octokitAppAuth.apps.listInstallations();
-    const installation = installations.find(
-      (installation) => installation.account.login === organization,
-    );
-    return installation.id;
-  };
-
-  const githubAppInstallationId = await getInstallationId();
-
-  const auth = createAppAuth({
-    appId: githubAppId,
-    privateKey: githubAppPrivateKey,
-  });
-
-  const installationAuthentication = await auth({
-    type: "installation",
-    installationId: githubAppInstallationId,
-  });
-
-  const octokit = github.getOctokit(installationAuthentication.token);
-
   const owner = github.context.repo.owner;
   const repo = github.context.repo.repo;
+
+  // set up octokit
+  const octokit = await setupOctokit(
+    githubAppId,
+    githubAppPrivateKey,
+    organization,
+  );
+
+  // get all repositories for organization
+  console.log(`📦 Getting repositories for ${organization}...`);
+  const repositories = await queryRepositoriesForOrg(octokit, organization);
 
   // get current repository data
   const repository = await queryRepository(octokit, owner, repo);
