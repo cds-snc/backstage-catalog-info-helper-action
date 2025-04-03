@@ -3,7 +3,7 @@
 {
     "name": "Node.js",
     // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-    "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bullseye@sha256:ec3314257dd1bd08d904cfc950ed41a863c87cae12dafa403b81c29d552d35f4",
+    "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bullseye@sha256:0725079991493cd3c0222cddb86359f74f07f39e1dafd619fe75566394d14b7f",
     // Features to add to the dev container. More info: https://containers.dev/features.
     "features": {},
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
